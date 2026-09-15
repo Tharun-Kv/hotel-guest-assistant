@@ -36,7 +36,8 @@ class AIOrchestrator:
         if self._is_personal_contact_request(message):
             return ResponseService.answer(
                 "Sorry, I don't have a personal phone number or contact details. "
-                "I can help with information about the hotel instead."
+                "Please call the hotel's help desk for direct assistance. "
+                "I can also help with information about the hotel."
             )
         context = (conversation or [])[-6:]
         intent = self.intent_detector.detect(message, context)

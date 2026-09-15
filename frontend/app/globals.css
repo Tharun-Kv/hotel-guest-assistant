@@ -26,3 +26,35 @@ h1, h2, h3 {
   font-family: Georgia, 'Times New Roman', serif;
   letter-spacing: -0.015em;
 }
+
+@keyframes concierge-timer-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes concierge-thinking-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.88); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.concierge-thinking-timer {
+  animation: concierge-timer-rotate 2.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  transform-origin: center;
+}
+
+.concierge-step-timer {
+  animation: concierge-timer-rotate 2.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  transform-origin: center;
+}
+
+.concierge-thinking-dot {
+  animation: concierge-thinking-pulse 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .concierge-thinking-timer,
+  .concierge-step-timer,
+  .concierge-thinking-dot {
+    animation: none;
+  }
+}

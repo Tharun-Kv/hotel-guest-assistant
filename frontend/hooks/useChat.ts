@@ -12,8 +12,8 @@ const WELCOME_MESSAGE: ChatMessage = {
   content: 'Welcome to Harbor View Hotel. I can help with hotel details, room recommendations, and availability.',
 };
 
-const MINIMUM_RESPONSE_DELAY_MS = 2_000;
-const PROGRESS_TIMINGS = [650, 1_300] as const;
+const MINIMUM_RESPONSE_DELAY_MS = 3_000;
+const PROGRESS_TIMINGS = [900, 1_950] as const;
 
 function wait(milliseconds: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
