@@ -51,3 +51,17 @@ def test_admin_basic_auth_rejects_invalid_credentials(monkeypatch):
     response = client.get("/api/admin/inventory", headers={"Authorization": f"Basic {credentials}"})
 
     assert response.status_code == 401
+
+
+def test_admin_basic_auth_is_allowed_by_frontend_cors():
+    response = client.options(
+        "/api/admin/inventory",
+        headers={
+            "Origin": "http://localhost:3000",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "authorization",
+        },
+    )
+
+    assert response.status_code == 200
+    assert "authorization" in response.headers["access-control-allow-headers"].lower()

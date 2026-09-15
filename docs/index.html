@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hotel Guest Assistant — grounded AI concierge with live room availability and a RAG knowledge layer.">
+  <title>Hotel Guest Assistant · Project overview</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #697386;
+      --line: #e7eaf0;
+      --card: rgba(255, 255, 255, .84);
+      --violet: #6d4aff;
+      --violet-dark: #4725c8;
+      --violet-soft: #eeeaff;
+      --mint-ink: #147052;
+      --shadow: 0 20px 55px rgba(35, 28, 85, .09);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at 78% 0%, #efeaff 0, transparent 33rem), linear-gradient(180deg, #fbfcff 0%, #f7f8fb 58%, #fff 100%);
+      font: 15px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: inherit; }
+    .wrap { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -.02em; text-decoration: none; }
+    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 13px; color: #fff; background: var(--ink); box-shadow: 0 8px 18px rgba(23, 32, 51, .2); }
+    .brand-mark svg { width: 20px; height: 20px; }
+    nav { display: flex; align-items: center; gap: 23px; color: var(--muted); font-size: 13px; font-weight: 700; }
+    nav a { text-decoration: none; }
+    nav a:hover { color: var(--violet-dark); }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; padding: 11px 16px; color: #fff; background: var(--ink); font-weight: 800; text-decoration: none; box-shadow: 0 10px 22px rgba(23, 32, 51, .15); }
+    .button:hover { background: var(--violet-dark); transform: translateY(-1px); }
+    .button.secondary { color: var(--violet-dark); background: var(--violet-soft); box-shadow: none; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr); align-items: center; gap: 70px; padding: 82px 0 88px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--violet-dark); font-size: 12px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .eyebrow i { display: block; width: 7px; height: 7px; border-radius: 50%; background: #22b883; box-shadow: 0 0 0 5px #dff8ee; }
+    h1, h2, h3 { margin: 0; color: var(--ink); letter-spacing: -.045em; line-height: 1.08; }
+    h1 { max-width: 690px; margin-top: 19px; font-size: clamp(42px, 6vw, 74px); }
+    h2 { font-size: clamp(28px, 4vw, 42px); }
+    h3 { font-size: 18px; letter-spacing: -.025em; }
+    .hero-copy { max-width: 610px; margin: 22px 0 30px; color: var(--muted); font-size: 18px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 11px; }
+    .hero-note { margin-top: 20px; color: #8a92a2; font-size: 12px; }
+    .preview { position: relative; padding: 16px; border: 1px solid #e6e4f6; border-radius: 27px; background: rgba(255, 255, 255, .66); box-shadow: var(--shadow); transform: rotate(1.5deg); }
+    .preview-window { overflow: hidden; border: 1px solid #e8e9f2; border-radius: 20px; background: #fff; }
+    .preview-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 17px; border-bottom: 1px solid var(--line); }
+    .dots { display: flex; gap: 5px; }
+    .dots i { width: 7px; height: 7px; border-radius: 50%; background: #d8dbe5; }
+    .preview-status { display: inline-flex; align-items: center; gap: 7px; color: var(--mint-ink); font-size: 11px; font-weight: 800; }
+    .preview-status i { width: 6px; height: 6px; border-radius: 50%; background: #21b67c; }
+    .preview-body { display: grid; grid-template-columns: 1fr 1.15fr; min-height: 300px; }
+    .preview-side { padding: 18px; background: #f7f6fb; }
+    .preview-side strong { display: block; font-size: 12px; }
+    .side-line { height: 9px; margin-top: 16px; border-radius: 20px; background: #e2deff; }
+    .side-line.short { width: 58%; margin-top: 9px; background: #e7e9ef; }
+    .preview-chat { display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: 18px; }
+    .chat-label { color: #8a92a2; font-size: 10px; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+    .bubble { max-width: 88%; padding: 11px 13px; border-radius: 15px 15px 15px 4px; color: #536078; background: #f4f5f8; font-size: 12px; line-height: 1.5; }
+    .bubble.user { align-self: flex-end; border-radius: 15px 15px 4px 15px; color: #fff; background: var(--ink); }
+    .thinking { display: inline-flex; align-items: center; gap: 5px; padding: 9px 12px; border: 1px solid #e8e1ff; border-radius: 14px 14px 14px 4px; color: var(--violet-dark); background: #fbfaff; font-size: 11px; }
+    .thinking i { width: 5px; height: 5px; border-radius: 50%; background: var(--violet); animation: breathe 1.8s ease-in-out infinite; }
+    .thinking i:nth-child(2) { animation-delay: -.3s; } .thinking i:nth-child(3) { animation-delay: -.6s; }
+    @keyframes breathe { 0%, 100% { opacity: .35; transform: scale(.8); } 50% { opacity: 1; transform: scale(1); } }
+    section { padding: 82px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 30px; }
+    .section-head p { max-width: 480px; margin: 0; color: var(--muted); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .stat, .card { padding: 23px; border: 1px solid var(--line); border-radius: 19px; background: var(--card); box-shadow: 0 12px 35px rgba(41, 48, 72, .04); }
+    .stat strong { display: block; color: var(--violet-dark); font-size: 33px; letter-spacing: -.06em; }
+    .stat span { color: var(--muted); font-size: 13px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 13px; }
+    .card { min-height: 194px; }
+    .icon { display: grid; place-items: center; width: 37px; height: 37px; margin-bottom: 18px; border-radius: 12px; color: var(--violet-dark); background: var(--violet-soft); font-size: 17px; }
+    .card p { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+    .architecture { display: grid; grid-template-columns: repeat(3, 1fr); align-items: stretch; gap: 20px; }
+    .arch-node { position: relative; padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: #fff; box-shadow: var(--shadow); }
+    .arch-node:not(:last-child)::after { content: "→"; position: absolute; top: 50%; right: -25px; z-index: 2; color: #a199dd; font-size: 25px; transform: translateY(-50%); }
+    .arch-node .tag { display: inline-flex; padding: 4px 8px; border-radius: 8px; color: var(--violet-dark); background: var(--violet-soft); font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .arch-node p { margin: 13px 0 0; color: var(--muted); font-size: 13px; }
+    .stack { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+    .stack span { padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; color: #4b556b; background: #fff; font-size: 13px; font-weight: 800; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 18px; background: #fff; box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; min-width: 680px; }
+    th, td { padding: 15px 17px; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px; }
+    th { color: #7d8493; background: #fbfbfd; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+    tr:last-child td { border-bottom: 0; }
+    code { padding: 2px 6px; border-radius: 6px; color: #4d36c2; background: #f0edff; font: 700 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .quickstart { display: grid; grid-template-columns: .8fr 1.2fr; gap: 22px; align-items: stretch; }
+    .quick-copy { padding: 31px; border-radius: 22px; color: #fff; background: linear-gradient(140deg, #282e48, #171b2d); }
+    .quick-copy h2 { color: #fff; }
+    .quick-copy p { color: #c2c8dc; }
+    .steps { display: grid; gap: 10px; }
+    .step { display: flex; gap: 13px; align-items: flex-start; padding: 17px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
+    .step b { display: grid; place-items: center; width: 25px; height: 25px; flex: 0 0 auto; border-radius: 8px; color: #fff; background: var(--violet); font-size: 12px; }
+    .step strong { display: block; font-size: 14px; } .step span { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+    footer { padding: 30px 0 44px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    footer .foot { display: flex; justify-content: space-between; gap: 20px; }
+    footer a { color: var(--violet-dark); font-weight: 800; text-decoration: none; }
+    @media (max-width: 860px) {
+      nav a:not(.button) { display: none; }
+      .hero, .quickstart { grid-template-columns: 1fr; gap: 32px; }
+      .hero { padding-top: 47px; }
+      .stats, .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .architecture { grid-template-columns: 1fr; }
+      .arch-node:not(:last-child)::after { content: "↓"; top: auto; right: 50%; bottom: -29px; transform: translateX(50%); }
+    }
+    @media (max-width: 540px) {
+      .wrap { width: min(100% - 28px, 1160px); }
+      section { padding: 58px 0; }
+      .stats, .feature-grid { grid-template-columns: 1fr; }
+      .preview-body { grid-template-columns: 1fr; } .preview-side { display: none; }
+      .section-head, footer .foot { display: block; } .section-head p { margin-top: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap topbar">
+    <a class="brand" href="#top" aria-label="Hotel Guest Assistant home">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 17c2-5 4-8 8-8s6 3 8 8"/><path d="M7 14c1-4 3-6 5-6 3 0 5 3 5 6"/><circle cx="12" cy="5" r="1.5"/></svg></span>
+      <span>Hotel Guest Assistant</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#features">Features</a>
+      <a href="#architecture">Architecture</a>
+      <a href="api.html">API docs</a>
+      <a class="button" href="https://github.com/Tharun-Kv/hotel-guest-assistant">View on GitHub ↗</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="wrap hero">
+      <div>
+        <div class="eyebrow"><i></i> Grounded guest experience</div>
+        <h1>A calmer, smarter stay starts here.</h1>
+        <p class="hero-copy">An AI-powered hotel concierge that answers from approved hotel knowledge, checks live room inventory, and keeps every guest interaction clear and human.</p>
+        <div class="actions">
+          <a class="button" href="#quickstart">Get started <span aria-hidden="true">↓</span></a>
+          <a class="button secondary" href="api.html">Explore the API <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="hero-note">Server-side Gemini support · deterministic availability · responsive Next.js interface</p>
+      </div>
+      <div class="preview" aria-label="Illustration of the guest assistant interface">
+        <div class="preview-window">
+          <div class="preview-head"><div class="dots"><i></i><i></i><i></i></div><div class="preview-status"><i></i> Concierge online</div></div>
+          <div class="preview-body">
+            <div class="preview-side"><strong>Harbor View Hotel</strong><div class="side-line"></div><div class="side-line short"></div><div class="side-line"></div><div class="side-line short"></div></div>
+            <div class="preview-chat"><div class="chat-label">Little Bird concierge</div><div class="bubble">Welcome. I can help with hotel details, room recommendations, and live availability.</div><div class="bubble user">Which room works for two guests?</div><div class="thinking"><i></i><i></i><i></i> Checking hotel information</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="wrap" aria-labelledby="proof-title">
+      <div class="section-head"><div><div class="eyebrow">Built to be useful</div><h2 id="proof-title">Small surface. Serious foundation.</h2></div><p>The project is deliberately split into grounded knowledge, deterministic inventory, and a focused guest-facing experience.</p></div>
+      <div class="stats"><div class="stat"><strong>8</strong><span>core guest features</span></div><div class="stat"><strong>3</strong><span>thinking-stage handoff</span></div><div class="stat"><strong>2</strong><span>AI provider paths</span></div><div class="stat"><strong>41</strong><span>backend tests</span></div></div>
+    </section>
+
+    <section id="features" class="wrap" aria-labelledby="features-title">
+      <div class="section-head"><div><div class="eyebrow">Product surface</div><h2 id="features-title">Everything guests ask for.</h2></div><p>Every feature is connected to a clear source of truth, with graceful local fallbacks when a model or external page is unavailable.</p></div>
+      <div class="feature-grid">
+        <article class="card"><div class="icon">✦</div><h3>Grounded chat</h3><p>Answers are composed from approved hotel information and retrieved source chunks.</p></article>
+        <article class="card"><div class="icon">⌁</div><h3>Live inventory</h3><p>Room status, prices, capacities, and booking intervals are checked deterministically.</p></article>
+        <article class="card"><div class="icon">◌</div><h3>RAG ingestion</h3><p>Operators can scrape a public hotel page or index approved text in the admin workspace.</p></article>
+        <article class="card"><div class="icon">→</div><h3>Natural handoff</h3><p>Clarifying questions guide guests to dates, guest count, and the next useful action.</p></article>
+        <article class="card"><div class="icon">◷</div><h3>Human pacing</h3><p>A calm staged thinking state keeps the assistant transparent while a request is processed.</p></article>
+        <article class="card"><div class="icon">⌂</div><h3>Hotel context</h3><p>Hotel amenities, policies, rooms, and arrival details are available from one assistant.</p></article>
+        <article class="card"><div class="icon">↗</div><h3>Responsive UI</h3><p>A Mobbin-inspired dashboard adapts from a focused mobile chat to a wide desktop workspace.</p></article>
+        <article class="card"><div class="icon">✓</div><h3>Safe boundaries</h3><p>API keys stay server-side and the assistant avoids inventing personal contact details.</p></article>
+      </div>
+    </section>
+
+    <section id="architecture" class="wrap" aria-labelledby="architecture-title">
+      <div class="section-head"><div><div class="eyebrow">Architecture</div><h2 id="architecture-title">Three dependable layers.</h2></div><p>Requests move through a small set of typed boundaries, making the behavior easy to test and extend.</p></div>
+      <div class="architecture">
+        <article class="arch-node"><span class="tag">01 · Guest UI</span><h3>Next.js + React</h3><p>Responsive concierge, availability finder, staged response state, and operator console.</p></article>
+        <article class="arch-node"><span class="tag">02 · API layer</span><h3>FastAPI services</h3><p>Validation, chat orchestration, conversations, availability, health, and protected admin routes.</p></article>
+        <article class="arch-node"><span class="tag">03 · Truth layer</span><h3>RAG + inventory</h3><p>Retrieved hotel chunks explain policy; live inventory makes the final room decision.</p></article>
+      </div>
+      <div class="stack" aria-label="Technology stack"><span>Next.js 14</span><span>React 18</span><span>TypeScript</span><span>Tailwind CSS</span><span>Python</span><span>FastAPI</span><span>Gemini API</span><span>OpenAI fallback</span><span>pytest</span></div>
+    </section>
+
+    <section class="wrap" aria-labelledby="api-title">
+      <div class="section-head"><div><div class="eyebrow">API surface</div><h2 id="api-title">Small, typed, predictable.</h2></div><a class="button secondary" href="api.html">Read full reference ↗</a></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>GET</code></td><td><code>/api/health</code></td><td>Service health and version</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/chat</code></td><td>Grounded guest reply and optional availability</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/availability</code></td><td>Deterministic room availability lookup</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/knowledge/search</code></td><td>Inspect retrieved hotel source chunks</td></tr>
+            <tr><td><code>PUT</code></td><td><code>/api/admin/inventory</code></td><td>Atomically replace live inventory</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="quickstart" class="wrap" aria-labelledby="quickstart-title">
+      <div class="quickstart">
+        <div class="quick-copy"><div class="eyebrow" style="color:#bfb4ff">Quick start</div><h2 id="quickstart-title" style="margin-top:14px">Run the concierge locally.</h2><p>Configure a server-side provider key when you want model-powered phrasing. The deterministic paths still make the application useful without one.</p><a class="button secondary" href="https://github.com/Tharun-Kv/hotel-guest-assistant#setup" style="margin-top:12px">Open setup guide ↗</a></div>
+        <div class="steps">
+          <div class="step"><b>1</b><div><strong>Install the backend</strong><span>Copy <code>backend/.env.example</code> to <code>backend/.env</code>, then run the FastAPI server.</span></div></div>
+          <div class="step"><b>2</b><div><strong>Start the frontend</strong><span>Copy <code>frontend/.env.example</code> to <code>frontend/.env.local</code>, install packages, and run Next.js.</span></div></div>
+          <div class="step"><b>3</b><div><strong>Try a guest question</strong><span>Ask about check-in, amenities, or availability. The chat shows its work as it responds.</span></div></div>
+          <div class="step"><b>4</b><div><strong>Open operations</strong><span>Visit <code>/admin</code> to ingest hotel knowledge or update the live room snapshot.</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap foot"><span>Hotel Guest Assistant · built for clearer stays.</span><span><a href="api.html">API reference</a> · <a href="https://github.com/Tharun-Kv/hotel-guest-assistant">GitHub</a></span></div></footer>
+</body>
+</html>

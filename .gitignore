@@ -21,7 +21,10 @@ frontend/out/
 frontend/npm-debug.log*
 
 # Editor and OS files
-docs/
+docs/*
+!docs/
+!docs/index.html
+!docs/api.html
 .vscode/
 .idea/
 Thumbs.db
