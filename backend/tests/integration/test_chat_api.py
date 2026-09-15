@@ -31,6 +31,16 @@ def test_chat_api_identity_questions_return_capabilities():
         assert "availability" in data["message"].lower()
 
 
+def test_chat_api_does_not_expose_hotel_contact_for_personal_phone_request():
+    response = client.post("/api/chat", json={"message": "What is your phone number?"})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["type"] == "answer"
+    assert "personal phone number" in data["message"].lower()
+    assert "+1 (206) 555-0147" not in data["message"]
+
+
 def test_chat_api_room_question():
     response = client.post("/api/chat", json={"message": "Which room is good for 3 people?"})
     assert response.status_code == 200

@@ -33,6 +33,11 @@ class AIOrchestrator:
 
     def handle_message(self, message: str, conversation: list[dict[str, str]] | None = None) -> dict[str, Any]:
         message = normalize_message(message)
+        if self._is_personal_contact_request(message):
+            return ResponseService.answer(
+                "Sorry, I don't have a personal phone number or contact details. "
+                "I can help with information about the hotel instead."
+            )
         context = (conversation or [])[-6:]
         intent = self.intent_detector.detect(message, context)
 
@@ -62,6 +67,12 @@ class AIOrchestrator:
             return self._check_availability(message)
         rag_answer = self.rag_service.answer(message)
         return rag_answer or ResponseService.fallback()
+
+    @staticmethod
+    def _is_personal_contact_request(message: str) -> bool:
+        text = message.lower()
+        personal_terms = ("your phone", "your number", "your email", "your contact", "call you")
+        return any(term in text for term in personal_terms)
 
     def _answer_faq(self, message: str) -> dict[str, Any]:
         text = message.lower()
