@@ -133,6 +133,8 @@ GEMINI_MODEL=gemini-2.0-flash
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
 ADMIN_API_TOKEN=
+ADMIN_USERNAME=
+ADMIN_PASSWORD=
 ENVIRONMENT=development
 MAX_MESSAGE_LENGTH=1000
 MAX_CONVERSATION_HISTORY=8
@@ -144,7 +146,7 @@ Set `GEMINI_API_KEY` to use Gemini. If it is empty, the app falls back to OpenAI
 
 ## RAG and live hotel operations
 
-Open `http://localhost:3000/admin` to manage the local hotel. In development, the admin token may be blank. Outside development, set `ADMIN_API_TOKEN` and send it as `X-Admin-Token`.
+Open `http://localhost:3000/admin` to manage the local hotel. The admin workspace accepts either configured Basic credentials (`ADMIN_USERNAME` + `ADMIN_PASSWORD`) or `ADMIN_API_TOKEN`. In development, all admin credentials may be blank; outside development, configure one of those methods before enabling updates.
 
 The ingestion form accepts a public HTTP(S) hotel page or approved pasted content. The backend strips non-content HTML, chunks the text, stores source metadata, and ranks matching chunks with a deterministic TF-IDF-style lexical scorer. Gemini receives only the retrieved chunks and must answer from them; if the model is unavailable, the UI still receives a grounded excerpt with its source.
 

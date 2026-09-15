@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, Building2, CircleHelp, LayoutDashboard, MessageCircle, Settings2, Sparkles } from 'lucide-react';
+import { BookOpen, Building2, CircleHelp, Hotel, LayoutDashboard, MessageCircle, Settings2 } from 'lucide-react';
 
 type SidebarProps = {
   hotelName?: string;
@@ -20,7 +20,7 @@ export default function Sidebar({ hotelName, active, onNavigate }: SidebarProps)
     <aside className="hidden w-[236px] shrink-0 flex-col border-r border-[#e5e2df] bg-[#efedeb] px-3 py-4 lg:flex">
       <div className="flex items-center justify-between px-2">
         <div className="flex min-w-0 items-center gap-2.5">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-violet-300"><Sparkles size={17} strokeWidth={1.8} aria-hidden="true" /></div>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-violet-300"><Hotel size={17} strokeWidth={1.8} aria-hidden="true" /></div>
           <div className="min-w-0">
             <p className="truncate font-sans text-xs font-bold text-slate-900">{hotelName || 'Harbor View Hotel'}</p>
             <p className="font-sans text-[10px] text-slate-500">Guest experience</p>

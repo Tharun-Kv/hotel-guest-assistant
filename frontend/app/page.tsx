@@ -90,7 +90,6 @@ export default function HomePage() {
                 <div className="min-w-0"><p className="truncate font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">{hotelName || 'Harbor View Hotel'} / guest journey</p><h1 className="font-display mt-0.5 text-xl font-bold tracking-tight text-slate-950">Stay overview</h1></div>
               </div>
               <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 font-sans text-xs font-semibold text-emerald-800 sm:flex"><span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" /> Online now</div>
                 <button type="button" aria-label="Notifications" className="rounded-xl p-2 text-slate-500 transition hover:bg-white hover:text-slate-950"><Bell size={18} aria-hidden="true" /></button>
                 <CircleUserRound size={23} className="text-slate-400" aria-hidden="true" />
               </div>

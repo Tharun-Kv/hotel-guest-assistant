@@ -1,3 +1,6 @@
+import base64
+
+import pytest
 from fastapi.testclient import TestClient
 
 from app.api.routes import admin
@@ -27,3 +30,24 @@ def test_admin_inventory_update_is_used_by_the_operator_api(tmp_path, monkeypatc
 
     assert response.status_code == 200
     assert response.json()["rooms"][0]["status"] == "maintenance"
+
+
+def test_admin_basic_auth_accepts_configured_credentials(tmp_path, monkeypatch):
+    monkeypatch.setattr(settings, "ADMIN_USERNAME", "hotel-admin")
+    monkeypatch.setattr(settings, "ADMIN_PASSWORD", "correct-password")
+    monkeypatch.setattr(admin, "inventory_repository", InventoryRepository(tmp_path / "live.json"))
+    credentials = base64.b64encode(b"hotel-admin:correct-password").decode("ascii")
+
+    response = client.get("/api/admin/inventory", headers={"Authorization": f"Basic {credentials}"})
+
+    assert response.status_code == 200
+
+
+def test_admin_basic_auth_rejects_invalid_credentials(monkeypatch):
+    monkeypatch.setattr(settings, "ADMIN_USERNAME", "hotel-admin")
+    monkeypatch.setattr(settings, "ADMIN_PASSWORD", "correct-password")
+    credentials = base64.b64encode(b"hotel-admin:wrong-password").decode("ascii")
+
+    response = client.get("/api/admin/inventory", headers={"Authorization": f"Basic {credentials}"})
+
+    assert response.status_code == 401

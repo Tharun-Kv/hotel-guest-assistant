@@ -8,6 +8,7 @@ import {
   listKnowledgeDocuments,
   searchKnowledge,
   updateLiveInventory,
+  type AdminCredentials,
   type InventorySnapshot,
   type KnowledgeDocument,
   type KnowledgeSearchResult,
@@ -21,6 +22,8 @@ const EMPTY_INVENTORY: InventorySnapshot = {
 };
 
 export default function AdminConsole() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
   const [hotelId, setHotelId] = useState('default');
   const [url, setUrl] = useState('');
@@ -32,6 +35,7 @@ export default function AdminConsole() {
   const [searchResults, setSearchResults] = useState<KnowledgeSearchResult[]>([]);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const credentials: AdminCredentials = { username, password, token };
 
   const run = async (operation: () => Promise<void>) => {
     setError(null);
@@ -44,15 +48,15 @@ export default function AdminConsole() {
   };
 
   const loadDocuments = () => run(async () => {
-    setDocuments(await listKnowledgeDocuments(token, hotelId));
+    setDocuments(await listKnowledgeDocuments(credentials, hotelId));
     setStatus('Knowledge documents refreshed.');
   });
 
   const ingest = () => run(async () => {
     if (url.trim()) {
-      await ingestKnowledgeSource({ url: url.trim(), title: title.trim() || undefined, hotel_id: hotelId }, token);
+      await ingestKnowledgeSource({ url: url.trim(), title: title.trim() || undefined, hotel_id: hotelId }, credentials);
     } else {
-      await ingestKnowledgeSource({ content: manualContent, title: title.trim(), hotel_id: hotelId }, token);
+      await ingestKnowledgeSource({ content: manualContent, title: title.trim(), hotel_id: hotelId }, credentials);
     }
     setUrl('');
     setManualContent('');
@@ -61,14 +65,14 @@ export default function AdminConsole() {
   });
 
   const loadInventory = () => run(async () => {
-    const snapshot = await getLiveInventory(token, hotelId);
+    const snapshot = await getLiveInventory(credentials, hotelId);
     setInventoryJson(JSON.stringify(snapshot, null, 2));
     setStatus('Live inventory loaded.');
   });
 
   const saveInventory = () => run(async () => {
     const snapshot = JSON.parse(inventoryJson) as InventorySnapshot;
-    const saved = await updateLiveInventory(snapshot, token);
+    const saved = await updateLiveInventory(snapshot, credentials);
     setInventoryJson(JSON.stringify(saved, null, 2));
     setStatus('Live inventory updated. New availability checks use this snapshot immediately.');
   });
@@ -82,10 +86,12 @@ export default function AdminConsole() {
     <div className="space-y-6">
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950">
         <p className="font-semibold">Hotel operations workspace</p>
-        <p className="mt-1 leading-6">Ingest public hotel pages or approved text into the retrieval index, then update the live room snapshot used by availability. Configure <code>ADMIN_API_TOKEN</code> outside local development.</p>
-        <label className="mt-3 block font-medium">Admin token (optional in local development)
-          <input type="password" value={token} onChange={(event) => setToken(event.target.value)} className="mt-1 block w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-amber-300" placeholder="X-Admin-Token" />
-        </label>
+        <p className="mt-1 leading-6">Ingest public hotel pages or approved text into the retrieval index, then update the live room snapshot used by availability. Use either Basic credentials or the configured admin token.</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <label className="block font-medium">Admin username<input value={username} onChange={(event) => setUsername(event.target.value)} className="mt-1 block w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-amber-300" autoComplete="username" /></label>
+          <label className="block font-medium">Admin password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-1 block w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-amber-300" autoComplete="current-password" /></label>
+          <label className="block font-medium">Admin token<input type="password" value={token} onChange={(event) => setToken(event.target.value)} className="mt-1 block w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-amber-300" autoComplete="off" placeholder="X-Admin-Token" /></label>
+        </div>
       </section>
 
       {error ? <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div> : null}

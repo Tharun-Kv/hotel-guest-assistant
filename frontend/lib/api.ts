@@ -27,6 +27,12 @@ export interface InventorySnapshot {
   bookings: Array<Record<string, unknown>>;
 }
 
+export interface AdminCredentials {
+  username?: string;
+  password?: string;
+  token?: string;
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export class ApiError extends Error {
@@ -67,8 +73,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
 }
 
-function adminHeaders(token: string): HeadersInit {
-  return token.trim() ? { 'X-Admin-Token': token.trim() } : {};
+function adminHeaders({ username = '', password = '', token = '' }: AdminCredentials): HeadersInit {
+  if (username.trim() && password) {
+    return { Authorization: `Basic ${btoa(`${username.trim()}:${password}`)}` };
+  }
+  if (token.trim()) return { 'X-Admin-Token': token.trim() };
+  return {};
 }
 
 export function sendChatMessage(
@@ -100,28 +110,28 @@ export function searchKnowledge(query: string, hotelId = 'default'): Promise<{ r
   });
 }
 
-export function listKnowledgeDocuments(token: string, hotelId = 'default'): Promise<KnowledgeDocument[]> {
+export function listKnowledgeDocuments(credentials: AdminCredentials, hotelId = 'default'): Promise<KnowledgeDocument[]> {
   return request(`/api/admin/knowledge/documents?hotel_id=${encodeURIComponent(hotelId)}`, {
-    headers: adminHeaders(token),
+    headers: adminHeaders(credentials),
   });
 }
 
-export function ingestKnowledgeSource(payload: { url?: string; content?: string; title?: string; hotel_id?: string; source_url?: string }, token: string): Promise<{ document: KnowledgeDocument }> {
+export function ingestKnowledgeSource(payload: { url?: string; content?: string; title?: string; hotel_id?: string; source_url?: string }, credentials: AdminCredentials): Promise<{ document: KnowledgeDocument }> {
   return request('/api/admin/knowledge/ingest', {
     method: 'POST',
-    headers: adminHeaders(token),
+    headers: adminHeaders(credentials),
     body: JSON.stringify(payload),
   });
 }
 
-export function getLiveInventory(token: string, hotelId = 'default'): Promise<InventorySnapshot> {
-  return request(`/api/admin/inventory?hotel_id=${encodeURIComponent(hotelId)}`, { headers: adminHeaders(token) });
+export function getLiveInventory(credentials: AdminCredentials, hotelId = 'default'): Promise<InventorySnapshot> {
+  return request(`/api/admin/inventory?hotel_id=${encodeURIComponent(hotelId)}`, { headers: adminHeaders(credentials) });
 }
 
-export function updateLiveInventory(snapshot: InventorySnapshot, token: string): Promise<InventorySnapshot> {
+export function updateLiveInventory(snapshot: InventorySnapshot, credentials: AdminCredentials): Promise<InventorySnapshot> {
   return request('/api/admin/inventory', {
     method: 'PUT',
-    headers: adminHeaders(token),
+    headers: adminHeaders(credentials),
     body: JSON.stringify(snapshot),
   });
 }

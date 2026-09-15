@@ -23,6 +23,8 @@ class Settings:
     GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
     OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "")
+    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
     ADMIN_API_TOKEN = os.getenv("ADMIN_API_TOKEN", "")
     MAX_MESSAGE_LENGTH = int(os.getenv("MAX_MESSAGE_LENGTH", "1000"))
     MAX_CONVERSATION_HISTORY = int(os.getenv("MAX_CONVERSATION_HISTORY", "8"))
