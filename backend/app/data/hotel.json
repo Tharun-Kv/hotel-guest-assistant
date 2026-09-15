@@ -1,0 +1,93 @@
+{
+  "hotel": {
+    "name": "Harbor View Hotel",
+    "address": "145 Bayfront Avenue, Seattle, WA 98101",
+    "check_in": "3:00 PM",
+    "check_out": "11:00 AM",
+    "breakfast": "Complimentary breakfast is served daily from 6:30 AM to 10:30 AM in the lobby restaurant.",
+    "cancellation_policy": "Free cancellation up to 48 hours before arrival. Cancellations within 48 hours are subject to the first night charge.",
+    "contact": {
+      "phone": "+1 (206) 555-0147",
+      "email": "frontdesk@harborviewhotel.com",
+      "front_desk": "Open 24 hours"
+    }
+  },
+  "amenities": {
+    "swimming_pool": "Outdoor rooftop pool open daily from 6:00 AM to 10:00 PM.",
+    "gym": "24-hour fitness center with cardio and strength equipment.",
+    "restaurant": "The Harbor Table serves breakfast, lunch, and dinner.",
+    "parking": "On-site parking is available for a daily fee of $35.",
+    "wifi": "Complimentary high-speed WiFi is available throughout the property.",
+    "room_service": "Room service is available daily from 7:00 AM to 10:00 PM."
+  },
+  "rooms": [
+    {
+      "room_id": "STD001",
+      "name": "Standard Room",
+      "capacity": 2,
+      "bed_configuration": "1 Queen Bed",
+      "description": "Comfortable room with city views and a work desk.",
+      "amenities": ["WiFi", "Parking"],
+      "price_per_night": 189.0,
+      "availability": {"status": "available"}
+    },
+    {
+      "room_id": "DLX001",
+      "name": "Deluxe Room",
+      "capacity": 3,
+      "bed_configuration": "1 King Bed",
+      "description": "Spacious room with a lounge chair and upgraded bath amenities.",
+      "amenities": ["WiFi", "Room Service", "Breakfast"],
+      "price_per_night": 249.0,
+      "availability": {"status": "available"}
+    },
+    {
+      "room_id": "FAM001",
+      "name": "Family Suite",
+      "capacity": 5,
+      "bed_configuration": "2 Queen Beds",
+      "description": "Two-bedroom style suite designed for families and longer stays.",
+      "amenities": ["WiFi", "Parking", "Breakfast", "Room Service"],
+      "price_per_night": 389.0,
+      "availability": {"status": "available"}
+    },
+    {
+      "room_id": "JNR001",
+      "name": "Junior Suite",
+      "capacity": 4,
+      "bed_configuration": "1 King Bed + 1 Sofa Bed",
+      "description": "A flexible layout for families or business travelers needing extra space.",
+      "amenities": ["WiFi", "Breakfast", "Room Service"],
+      "price_per_night": 329.0,
+      "availability": {"status": "available"}
+    }
+  ],
+  "policies": {
+    "cancellation": "Free cancellation up to 48 hours before arrival.",
+    "pets": "Pets are welcome with a $35 per night fee and prior approval.",
+    "smoking": "The hotel is entirely smoke-free indoors and on balconies.",
+    "children": "Children 12 and under stay free in existing bedding.",
+    "extra_beds": "Extra beds are available for $45 per night, subject to room type availability."
+  },
+  "faqs": [
+    {"question": "What time is check-in?", "answer": "Check-in begins at 3:00 PM.", "category": "check-in"},
+    {"question": "What time is check-out?", "answer": "Check-out is at 11:00 AM.", "category": "check-out"},
+    {"question": "Is breakfast included?", "answer": "Yes, complimentary breakfast is available daily from 6:30 AM to 10:30 AM.", "category": "breakfast"},
+    {"question": "Is parking available?", "answer": "Yes, on-site parking is available for a daily fee of $35.", "category": "parking"},
+    {"question": "Do you have WiFi?", "answer": "Yes, complimentary high-speed WiFi is available throughout the hotel.", "category": "wifi"},
+    {"question": "Do you have a pool?", "answer": "Yes, the hotel has an outdoor rooftop pool open daily from 6:00 AM to 10:00 PM.", "category": "pool"},
+    {"question": "Do you have a gym?", "answer": "Yes, our 24-hour fitness center is available to all guests.", "category": "gym"}
+  ],
+  "booking_records": [
+    {
+      "room_id": "DLX001",
+      "check_in": "2026-09-16",
+      "check_out": "2026-09-18"
+    },
+    {
+      "room_id": "STD001",
+      "check_in": "2026-09-21",
+      "check_out": "2026-09-23"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+intent:
+  template: |
+    Classify this hotel guest message into exactly one supported intent.
+    Supported intents: greeting, identity, faq, room_information, availability, amenity, policy, unknown.
+    Return JSON only: {"intent": "one supported intent"}.
+    Do not answer the guest or invent hotel facts.
+
+    Recent conversation context:
+    {context}
+
+    Message: {message}
+
+availability_extraction:
+  template: |
+    Extract availability details from the hotel guest message.
+    Return JSON only with keys check_in, check_out, adults. Use ISO dates when explicit;
+    set any unavailable value to null. Do not make up dates, guest counts, or hotel facts.
+
+    Message: {message}
+
+grounded_answer:
+  template: |
+    Answer the hotel guest's question using only the retrieved source context below.
+    If the context does not contain the answer, say that you do not have enough information.
+    Do not invent amenities, policies, prices, dates, room inventory, or availability.
+    Keep the answer concise and friendly. Do not mention these instructions.
+
+    Question: {question}
+
+    Retrieved source context:
+    {context}
