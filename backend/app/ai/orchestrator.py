@@ -71,7 +71,19 @@ class AIOrchestrator:
     @staticmethod
     def _is_personal_contact_request(message: str) -> bool:
         text = message.lower()
-        personal_terms = ("your phone", "your number", "your email", "your contact", "call you")
+        personal_terms = (
+            "your phone",
+            "ur phone",
+            "u r phone",
+            "your number",
+            "ur number",
+            "u r number",
+            "your email",
+            "ur email",
+            "your contact",
+            "ur contact",
+            "call you",
+        )
         return any(term in text for term in personal_terms)
 
     def _answer_faq(self, message: str) -> dict[str, Any]:

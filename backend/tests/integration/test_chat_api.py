@@ -32,13 +32,14 @@ def test_chat_api_identity_questions_return_capabilities():
 
 
 def test_chat_api_does_not_expose_hotel_contact_for_personal_phone_request():
-    response = client.post("/api/chat", json={"message": "What is your phone number?"})
+    for message in ("What is your phone number?", "give me ur phone number"):
+        response = client.post("/api/chat", json={"message": message})
 
-    assert response.status_code == 200
-    data = response.json()
-    assert data["type"] == "answer"
-    assert "personal phone number" in data["message"].lower()
-    assert "+1 (206) 555-0147" not in data["message"]
+        assert response.status_code == 200
+        data = response.json()
+        assert data["type"] == "answer"
+        assert "personal phone number" in data["message"].lower()
+        assert "+1 (206) 555-0147" not in data["message"]
 
 
 def test_chat_api_room_question():
